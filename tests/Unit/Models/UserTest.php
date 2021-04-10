@@ -3,6 +3,7 @@
 namespace Tests\Unit\Models;
 
 use App\Models\User;
+use App\Models\Lesson;
 use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
@@ -23,7 +24,9 @@ class UserTest extends TestCase
         $user = new User();
         $user->plan = $plan;
 
-        $this->assertSame($canReserve, $user->canReserve($remainingCount, $reserationCount));
+        $lesson = new Lesson();
+
+        $this->assertSame($canReserve, $user->canReserve($lesson->remainingCount, $reserationCount));
     }
 
     public function dataCanReserve()
