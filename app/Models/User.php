@@ -63,5 +63,6 @@ class User extends Authenticatable
         if ($this->reservationCountThisMonth() === 5) {
             throw new \Exception('今月の予約がプランの上限に達しています。');
         }
+        return;
     }
 }
