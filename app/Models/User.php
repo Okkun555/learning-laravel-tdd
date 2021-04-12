@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\Lesson;
 use App\Models\Reservation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -45,12 +46,17 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class);
     }
 
+    public function profile(): HasOne
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
     public function reservationCountThisMonth(): int
     {
         $today = Carbon::today();
         return $this->reservations()
             ->whereYear('created_at', $today->year)
-            ->whrerMonth("created_at", $today->month)
+            ->whereMonth("created_at", $today->month)
             ->count();
     }
 
@@ -59,7 +65,7 @@ class User extends Authenticatable
         if ($lesson->remainingCount() === 0) {
             throw new \Exception('レッスンの予約可能上限に達しています。');
         }
-        if ($this->plan === 'gold') return;
+        if ($this->profile->plan === 'gold') return;
         if ($this->reservationCountThisMonth() === 5) {
             throw new \Exception('今月の予約がプランの上限に達しています。');
         }
